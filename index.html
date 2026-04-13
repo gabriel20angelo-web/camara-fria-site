@@ -355,6 +355,46 @@
             flex: 0 0 340px;
             position: relative;
         }
+        .hero-strip {
+            position: relative;
+            padding: 24px 0 48px;
+            background: linear-gradient(to bottom, transparent, rgba(10,20,32,0.4));
+            overflow: hidden;
+        }
+        .hero-strip::before, .hero-strip::after {
+            content: '';
+            position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2;
+            pointer-events: none;
+        }
+        .hero-strip::before { left: 0; background: linear-gradient(to right, var(--bg, #0a0e1a), transparent); }
+        .hero-strip::after { right: 0; background: linear-gradient(to left, var(--bg, #0a0e1a), transparent); }
+        .hero-strip-track {
+            display: flex;
+            gap: 16px;
+            width: max-content;
+            animation: scroll-strip 50s linear infinite;
+        }
+        .hero-strip:hover .hero-strip-track { animation-play-state: paused; }
+        .hero-strip-item {
+            flex: 0 0 auto;
+            width: 220px;
+            height: 150px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+        }
+        .hero-strip-item img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-strip-item span {
+            position: absolute; left: 0; right: 0; bottom: 0;
+            padding: 18px 10px 8px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            color: #fff; font-size: 12px; font-weight: 600;
+        }
+        @keyframes scroll-strip {
+            from { transform: translateX(0); }
+            to { transform: translateX(calc(-236px * 10)); }
+        }
         .gallery { background: #0a1420; }
         .gallery .section-tag { color: var(--ice-300); }
         .gallery .section-title { color: #fff; }
@@ -785,6 +825,32 @@
             </div>
         </div>
     </section>
+
+    <!-- ==================== STRIP HERO ==================== -->
+    <div class="hero-strip">
+        <div class="hero-strip-track">
+            <a href="#galeria" class="hero-strip-item"><img src="2.jpeg" alt="" loading="lazy"><span>Busca de vazamento</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="4.jpeg" alt="" loading="lazy"><span>Instalação</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="5.jpeg" alt="" loading="lazy"><span>Refrigeração comercial</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="6.jpeg" alt="" loading="lazy"><span>Câmara frigorífica</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="7.jpeg" alt="" loading="lazy"><span>Lavagem</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="8.jpeg" alt="" loading="lazy"><span>Carga de gás</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="9.jpeg" alt="" loading="lazy"><span>Troca de compressor</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="10.jpeg" alt="" loading="lazy"><span>Vácuo do sistema</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="11.jpeg" alt="" loading="lazy"><span>Cozinha industrial</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="3.jpeg" alt="" loading="lazy"><span>Manutenção</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="2.jpeg" alt="" loading="lazy"><span>Busca de vazamento</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="4.jpeg" alt="" loading="lazy"><span>Instalação</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="5.jpeg" alt="" loading="lazy"><span>Refrigeração comercial</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="6.jpeg" alt="" loading="lazy"><span>Câmara frigorífica</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="7.jpeg" alt="" loading="lazy"><span>Lavagem</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="8.jpeg" alt="" loading="lazy"><span>Carga de gás</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="9.jpeg" alt="" loading="lazy"><span>Troca de compressor</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="10.jpeg" alt="" loading="lazy"><span>Vácuo do sistema</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="11.jpeg" alt="" loading="lazy"><span>Cozinha industrial</span></a>
+            <a href="#galeria" class="hero-strip-item"><img src="3.jpeg" alt="" loading="lazy"><span>Manutenção</span></a>
+        </div>
+    </div>
 
     <!-- ==================== GALERIA ==================== -->
     <section class="section gallery" id="galeria">
