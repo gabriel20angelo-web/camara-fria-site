@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sx Engenharia Térmica - Câmara Fria e Refrigeração</title>
+    <meta name="description" content="Manutenção preventiva e corretiva de câmaras frias, freezers e refrigeração comercial e industrial. São Paulo e Grande SP. (11) 97794-6152">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ========== RESET ========== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; color: #1a1a2e; background: #fff; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* ========== CORES / VARIÁVEIS ========== */
+        :root {
+            --ice-50: #f0f9ff;
+            --ice-100: #e0f2fe;
+            --ice-200: #b9e6fe;
+            --ice-300: #7cd4fd;
+            --ice-400: #36bffa;
+            --ice-500: #0ca5eb;
+            --ice-600: #0084c9;
+            --ice-700: #0169a3;
+            --ice-800: #065986;
+            --ice-900: #0b4a6f;
+            --frost: #1e3a5f;
+            --deep: #0f1c2e;
+            --snow: #f8fbff;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --whatsapp: #25D366;
+            --whatsapp-hover: #1ebe5d;
+            --gradient-frost: linear-gradient(135deg, #0f1c2e 0%, #1e3a5f 50%, #0b4a6f 100%);
+            --gradient-ice: linear-gradient(135deg, #0ca5eb 0%, #36bffa 50%, #7cd4fd 100%);
+            --gradient-aurora: linear-gradient(135deg, #0f1c2e 0%, #0b4a6f 30%, #0ca5eb 70%, #7cd4fd 100%);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+            --shadow-glow: 0 0 30px rgba(12,165,235,0.3);
+        }
+
+        /* ========== HEADER STICKY ========== */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background: rgba(15, 28, 46, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 12px 0;
+            transition: all 0.3s ease;
+        }
+        .header.scrolled { padding: 8px 0; box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 1.4rem; font-weight: 800; color: #fff;
+        }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: var(--gradient-ice);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+        }
+        .logo span { color: var(--ice-400); }
+        .header-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--whatsapp); color: #fff;
+            padding: 10px 20px; border-radius: 50px;
+            font-weight: 600; font-size: 0.85rem;
+            transition: all 0.3s ease;
+            border: none; cursor: pointer;
+        }
+        .header-cta:hover { background: var(--whatsapp-hover); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(37,211,102,0.4); }
+        .header-cta svg { width: 18px; height: 18px; }
+
+        /* ========== HERO ========== */
+        .hero {
+            min-height: 100vh;
+            background: var(--gradient-frost);
+            display: flex; align-items: center;
+            position: relative; overflow: hidden;
+            padding: 120px 24px 80px;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; top: -50%; right: -20%; width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(12,165,235,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+        .hero::after {
+            content: '';
+            position: absolute; bottom: -30%; left: -10%; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(54,191,250,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+
+        /* Partículas de gelo */
+        .ice-particles {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; pointer-events: none;
+        }
+        .ice-particle {
+            position: absolute;
+            width: 6px; height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: snowfall linear infinite;
+        }
+        .ice-particle:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; width: 4px; height: 4px; }
+        .ice-particle:nth-child(2) { left: 25%; animation-duration: 15s; animation-delay: 2s; width: 3px; height: 3px; }
+        .ice-particle:nth-child(3) { left: 40%; animation-duration: 10s; animation-delay: 4s; }
+        .ice-particle:nth-child(4) { left: 55%; animation-duration: 14s; animation-delay: 1s; width: 5px; height: 5px; }
+        .ice-particle:nth-child(5) { left: 70%; animation-duration: 11s; animation-delay: 3s; width: 4px; height: 4px; }
+        .ice-particle:nth-child(6) { left: 85%; animation-duration: 13s; animation-delay: 5s; width: 3px; height: 3px; }
+        .ice-particle:nth-child(7) { left: 95%; animation-duration: 16s; animation-delay: 0s; width: 5px; height: 5px; }
+        .ice-particle:nth-child(8) { left: 5%;  animation-duration: 9s;  animation-delay: 6s; width: 4px; height: 4px; }
+        @keyframes snowfall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .hero-inner {
+            max-width: 1200px; margin: 0 auto; width: 100%;
+            position: relative; z-index: 2;
+            display: flex; align-items: center; justify-content: space-between; gap: 40px;
+        }
+        .hero-content { flex: 1; min-width: 0; }
+        .hero-image {
+            flex: 0 0 420px;
+            position: relative;
+        }
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+            animation: float 6s ease-in-out infinite;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 8px 20px;
+            color: var(--ice-300);
+            font-size: 0.85rem; font-weight: 500;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-badge-dot {
+            width: 8px; height: 8px;
+            background: var(--ice-400);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+        }
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            max-width: 750px;
+        }
+        .hero h1 .highlight {
+            background: var(--gradient-ice);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        .hero-locations {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            margin-bottom: 40px;
+        }
+        .hero-location {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.85rem; font-weight: 500;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .hero-location:hover {
+            background: rgba(12,165,235,0.15);
+            border-color: var(--ice-400);
+            color: #fff;
+        }
+        .hero-location svg { width: 14px; height: 14px; color: var(--ice-400); flex-shrink: 0; }
+
+        .btn-whatsapp {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--whatsapp); color: #fff;
+            padding: 16px 32px; border-radius: 14px;
+            font-weight: 700; font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+        }
+        .btn-whatsapp:hover {
+            background: var(--whatsapp-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37,211,102,0.4);
+        }
+        .btn-whatsapp svg { width: 22px; height: 22px; }
+
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: transparent; color: #fff;
+            padding: 16px 32px; border-radius: 14px;
+            font-weight: 600; font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--glass-border); cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: var(--glass);
+            border-color: var(--ice-400);
+        }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+        /* ========== SECTION GENERAL ========== */
+        .section { padding: 80px 24px; }
+        .section-inner { max-width: 1200px; margin: 0 auto; }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--ice-600); font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-tag::before {
+            content: '';
+            width: 24px; height: 2px;
+            background: var(--gradient-ice);
+            border-radius: 2px;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: var(--deep);
+            margin-bottom: 16px;
+            line-height: 1.15;
+        }
+        .section-title .highlight { color: var(--ice-500); }
+        .section-subtitle {
+            font-size: 1.05rem; color: #5a6a7a;
+            max-width: 600px; line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* ========== FEATURES (3 cards) ========== */
+        .features { background: var(--snow); }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+        .feature-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 32px;
+            text-align: center;
+            border: 1px solid #e8f0f8;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gradient-ice);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--ice-200);
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon {
+            width: 72px; height: 72px;
+            background: var(--ice-50);
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+            transition: all 0.4s ease;
+        }
+        .feature-card:hover .feature-icon {
+            background: var(--gradient-ice);
+            box-shadow: var(--shadow-glow);
+        }
+        .feature-icon svg { width: 32px; height: 32px; color: var(--ice-600); transition: color 0.4s ease; }
+        .feature-card:hover .feature-icon svg { color: #fff; }
+        .feature-card h3 {
+            font-size: 1.2rem; font-weight: 700; color: var(--deep);
+            margin-bottom: 12px;
+        }
+        .feature-card p { font-size: 0.95rem; color: #5a6a7a; line-height: 1.6; }
+
+        /* ========== SERVIÇOS ========== */
+        .services { background: var(--gradient-frost); position: relative; overflow: hidden; }
+        .services::before {
+            content: '';
+            position: absolute; top: 0; right: 0; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(12,165,235,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .services .section-tag { color: var(--ice-300); }
+        .services .section-title { color: #fff; }
+        .services .section-subtitle { color: rgba(255,255,255,0.6); }
+        .services-layout {
+            display: flex; align-items: center; gap: 60px;
+            margin-top: 48px;
+            position: relative; z-index: 2;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+        .services-image {
+            flex: 0 0 340px;
+            position: relative;
+        }
+        .gallery { background: #0a1420; }
+        .gallery .section-tag { color: var(--ice-300); }
+        .gallery .section-title { color: #fff; }
+        .gallery .section-subtitle { color: rgba(255,255,255,0.6); }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: transform .3s ease, border-color .3s ease;
+        }
+        .gallery-item:hover { transform: translateY(-4px); border-color: var(--ice-500); }
+        .gallery-item img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform .5s ease;
+        }
+        .gallery-item:hover img { transform: scale(1.05); }
+        .gallery-caption {
+            position: absolute; left: 0; right: 0; bottom: 0;
+            padding: 20px 16px 16px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .services-image img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.4));
+            animation: float 7s ease-in-out infinite;
+        }
+        .service-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 32px;
+            display: flex; align-items: flex-start; gap: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: var(--ice-400);
+            transform: translateY(-4px);
+        }
+        .service-icon {
+            width: 52px; height: 52px; flex-shrink: 0;
+            background: rgba(12,165,235,0.15);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .service-icon svg { width: 24px; height: 24px; color: var(--ice-400); }
+        .service-card h3 { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .service-card p { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+        /* ========== COMO FUNCIONA ========== */
+        .how-it-works { background: var(--snow); }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 48px;
+            position: relative;
+        }
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: calc(16.66% + 16px);
+            right: calc(16.66% + 16px);
+            height: 3px;
+            background: var(--gradient-ice);
+            border-radius: 2px;
+        }
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+        .step-number {
+            width: 72px; height: 72px;
+            background: var(--gradient-ice);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 28px;
+            font-size: 1.6rem; font-weight: 800; color: #fff;
+            position: relative;
+            z-index: 2;
+            box-shadow: var(--shadow-glow);
+        }
+        .step-card h3 {
+            font-size: 1.2rem; font-weight: 700; color: var(--deep);
+            margin-bottom: 12px;
+        }
+        .step-card p {
+            font-size: 0.95rem; color: #5a6a7a; line-height: 1.6;
+            max-width: 300px; margin: 0 auto;
+        }
+
+        /* ========== CTA SECTION ========== */
+        .cta-section {
+            background: var(--gradient-aurora);
+            padding: 80px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute; top: 50%; left: 50%; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(12,165,235,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .cta-section .section-inner {
+            position: relative; z-index: 2;
+            display: flex; align-items: center; justify-content: space-between; gap: 40px;
+        }
+        .cta-content { flex: 1; }
+        .cta-content h2 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800; color: #fff;
+            margin-bottom: 16px;
+        }
+        .cta-content p {
+            font-size: 1.1rem; color: rgba(255,255,255,0.7);
+            margin-bottom: 32px;
+            max-width: 500px;
+        }
+        .cta-image {
+            flex: 0 0 300px;
+        }
+        .cta-image img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 15px 40px rgba(0,0,0,0.3));
+            animation: float 8s ease-in-out infinite;
+        }
+
+        /* ========== CONTATO ========== */
+        .contact { background: #fff; }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            margin-top: 48px;
+        }
+        .contact-info { display: flex; flex-direction: column; gap: 24px; }
+        .contact-item {
+            display: flex; align-items: flex-start; gap: 16px;
+            padding: 24px;
+            background: var(--snow);
+            border-radius: 16px;
+            border: 1px solid #e8f0f8;
+            transition: all 0.3s ease;
+        }
+        .contact-item:hover { border-color: var(--ice-300); box-shadow: var(--shadow-sm); }
+        .contact-icon {
+            width: 48px; height: 48px; flex-shrink: 0;
+            background: var(--ice-50);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .contact-icon svg { width: 22px; height: 22px; color: var(--ice-600); }
+        .contact-item h3 { font-size: 1rem; font-weight: 700; color: var(--deep); margin-bottom: 4px; }
+        .contact-item p { font-size: 0.9rem; color: #5a6a7a; line-height: 1.5; }
+        .contact-map {
+            border-radius: 16px;
+            overflow: hidden;
+            min-height: 400px;
+            border: 1px solid #e8f0f8;
+        }
+        .contact-map iframe { width: 100%; height: 100%; min-height: 400px; border: 0; }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: var(--deep);
+            padding: 40px 24px;
+            text-align: center;
+        }
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
+        .footer-brand {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-size: 1.2rem; font-weight: 700; color: #fff;
+            margin-bottom: 16px;
+        }
+        .footer-brand span { color: var(--ice-400); }
+        .footer-cnpj { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 8px; }
+        .footer-copy { color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+
+        /* ========== WHATSAPP FLOAT ========== */
+        .whatsapp-float {
+            position: fixed; bottom: 24px; right: 24px;
+            z-index: 9999;
+            animation: float-btn 3s ease-in-out infinite;
+        }
+        @keyframes float-btn {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .whatsapp-float a {
+            display: flex; align-items: center; justify-content: center;
+            width: 60px; height: 60px;
+            background: var(--whatsapp);
+            border-radius: 50%;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+            transition: all 0.3s ease;
+        }
+        .whatsapp-float a:hover {
+            background: var(--whatsapp-hover);
+            box-shadow: 0 6px 30px rgba(37,211,102,0.5);
+            transform: scale(1.1);
+        }
+        .whatsapp-float svg { width: 32px; height: 32px; color: #fff; }
+        .whatsapp-float .float-badge {
+            position: absolute; top: -4px; right: -4px;
+            width: 20px; height: 20px;
+            background: #ff4c4c;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.7rem; font-weight: 700;
+        }
+
+        /* ========== RESPONSIVO ========== */
+        @media (max-width: 1024px) {
+            .hero-inner { flex-direction: column; text-align: center; }
+            .hero-image { flex: 0 0 auto; max-width: 350px; }
+            .hero-locations { justify-content: center; }
+            .hero-buttons { justify-content: center; }
+            .hero-subtitle { margin-left: auto; margin-right: auto; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .services-layout { flex-direction: column; }
+            .services-image { flex: 0 0 auto; max-width: 300px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .cta-section .section-inner { flex-direction: column; text-align: center; }
+            .cta-image { flex: 0 0 auto; max-width: 250px; }
+            .cta-content p { margin-left: auto; margin-right: auto; }
+        }
+        @media (max-width: 768px) {
+            .header-cta .cta-text { display: none; }
+            .header-cta { padding: 10px; border-radius: 50%; }
+            .features-grid,
+            .steps-grid,
+            .contact-grid { grid-template-columns: 1fr; }
+            .steps-grid::before { display: none; }
+            .hero { min-height: auto; padding: 120px 24px 60px; }
+            .hero-image { max-width: 280px; }
+            .hero-buttons { flex-direction: column; }
+            .btn-whatsapp, .btn-secondary { width: 100%; justify-content: center; }
+            .services-image { max-width: 250px; }
+            .cta-image { max-width: 200px; }
+        }
+        @media (max-width: 480px) {
+            .section { padding: 60px 16px; }
+            .hero-image { max-width: 220px; }
+            .services-image { max-width: 200px; }
+            .cta-image { max-width: 160px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <div class="logo-icon">&#10052;</div>
+                Sx <span>Engenharia Térmica</span>
+            </a>
+            <a href="https://api.whatsapp.com/send/?phone=5511977946152&text=Ol%C3%A1%2C+vim+pelo+site+e+gostaria+de+um+or%C3%A7amento" target="_blank" rel="noopener" class="header-cta">
+                <svg viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                <span class="cta-text">Fale Conosco</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero" id="inicio">
+        <div class="ice-particles">
+            <div class="ice-particle"></div>
+            <div class="ice-particle"></div>
+            <div class="ice-particle"></div>
+            <div class="ice-particle"></div>
+            <div class="ice-particle"></div>
+            <div class="ice-particle"></div>
+            <div class="ice-particle"></div>
+            <div class="ice-particle"></div>
+        </div>
+        <div class="hero-inner">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <div class="hero-badge-dot"></div>
+                    Atendimentos Emergenciais
+                </div>
+                <h1>
+                    Especialistas em
+                    <span class="highlight">Câmara Fria</span>
+                    e Refrigeração Industrial
+                </h1>
+                <p class="hero-subtitle">
+                    Manutenção preventiva e corretiva de câmaras frias, atendimentos emergenciais, reparo em freezers e refrigeração comercial e industrial.
+                </p>
+
+                <div class="hero-locations">
+                    <div class="hero-location">
+                        <svg viewBox="0 0 512 512" fill="currentColor"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>
+                        São Paulo
+                    </div>
+                    <div class="hero-location">
+                        <svg viewBox="0 0 512 512" fill="currentColor"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>
+                        Grande São Paulo
+                    </div>
+                </div>
+
+                <div class="hero-buttons">
+                    <a href="https://api.whatsapp.com/send/?phone=5511977946152&text=Ol%C3%A1%2C+vim+pelo+site+e+gostaria+de+um+or%C3%A7amento" target="_blank" rel="noopener" class="btn-whatsapp">
+                        <svg viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                        SOLICITE UM TÉCNICO AGORA
+                    </a>
+                    <a href="#servicos" class="btn-secondary">
+                        Nossos Serviços
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="equipamentos.png" alt="Equipamentos de refrigeração comercial">
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== DIFERENCIAIS ==================== -->
+    <section class="section features" id="diferenciais">
+        <div class="section-inner">
+            <div style="text-align:center; margin-bottom: 16px;">
+                <div class="section-tag" style="justify-content:center;">Por que nos escolher</div>
+                <h2 class="section-title" style="margin-left:auto; margin-right:auto;">
+                    Qualidade que você pode <span class="highlight">confiar</span>
+                </h2>
+                <p class="section-subtitle" style="margin-left:auto; margin-right:auto;">
+                    Atendimento rápido, profissionais qualificados e garantia em todos os serviços.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3>Garantia de Qualidade</h3>
+                    <p>Todos os serviços com garantia e suporte técnico completo. Peças originais e mão de obra especializada.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <h3>Atendimento Rápido</h3>
+                    <p>Atendemos com urgência. Técnico no local em poucas horas para minimizar suas perdas.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Equipe Especializada</h3>
+                    <p>Profissionais qualificados em refrigeração industrial, comercial e câmaras frias de todos os portes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SERVIÇOS ==================== -->
+    <section class="section services" id="servicos">
+        <div class="section-inner">
+            <div class="section-tag">Nossos Serviços</div>
+            <h2 class="section-title">
+                Soluções completas em <span class="highlight">refrigeração</span>
+            </h2>
+            <p class="section-subtitle">
+                Do reparo à manutenção, cuidamos de toda a cadeia de frio do seu negócio.
+            </p>
+            <div class="services-layout">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        </div>
+                        <div>
+                            <h3>Manutenção Preventiva</h3>
+                            <p>Planos de manutenção para garantir o funcionamento contínuo e evitar paradas inesperadas.</p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+                        </div>
+                        <div>
+                            <h3>Manutenção Corretiva</h3>
+                            <p>Diagnóstico rápido e reparo eficiente para que seu equipamento volte a funcionar o mais rápido possível.</p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="10"/></svg>
+                        </div>
+                        <div>
+                            <h3>Atendimento Emergencial</h3>
+                            <p>Atendimentos de urgência para evitar perdas de mercadoria. Resposta rápida em São Paulo e região.</p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.636 5.636l12.728 12.728M18.364 5.636L5.636 18.364"/></svg>
+                        </div>
+                        <div>
+                            <h3>Refrigeração Comercial</h3>
+                            <p>Reparo em freezers, geladeiras, balcões refrigerados, expositores e equipamentos industriais.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="services-image">
+                    <img src="camara-fria.jpg" alt="Câmara fria industrial">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== GALERIA ==================== -->
+    <section class="section gallery" id="galeria">
+        <div class="section-inner">
+            <div style="text-align:center; margin-bottom:16px;">
+                <div class="section-tag" style="justify-content:center;">Nosso Trabalho</div>
+                <h2 class="section-title" style="margin-left:auto; margin-right:auto;">
+                    Galeria de <span class="highlight">serviços</span>
+                </h2>
+                <p class="section-subtitle" style="margin-left:auto; margin-right:auto;">
+                    Alguns dos atendimentos realizados pela nossa equipe.
+                </p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="2.jpeg" alt="Busca de vazamento de gás" loading="lazy"><div class="gallery-caption">Busca de vazamento de gás</div></div>
+                <div class="gallery-item"><img src="3.jpeg" alt="Sistema de refrigeração" loading="lazy"><div class="gallery-caption">Manutenção em sistemas de refrigeração</div></div>
+                <div class="gallery-item"><img src="4.jpeg" alt="Instalação de equipamentos novos" loading="lazy"><div class="gallery-caption">Instalação de equipamentos novos</div></div>
+                <div class="gallery-item"><img src="5.jpeg" alt="Sistemas de refrigeração comercial" loading="lazy"><div class="gallery-caption">Sistemas de refrigeração comercial</div></div>
+                <div class="gallery-item"><img src="6.jpeg" alt="Câmara frigorífica" loading="lazy"><div class="gallery-caption">Câmara frigorífica</div></div>
+                <div class="gallery-item"><img src="7.jpeg" alt="Lavagem de equipamentos" loading="lazy"><div class="gallery-caption">Lavagem de equipamentos</div></div>
+                <div class="gallery-item"><img src="8.jpeg" alt="Carga de gás em geladeiras comerciais" loading="lazy"><div class="gallery-caption">Carga de gás em geladeiras comerciais</div></div>
+                <div class="gallery-item"><img src="9.jpeg" alt="Troca de compressor" loading="lazy"><div class="gallery-caption">Troca de compressor</div></div>
+                <div class="gallery-item"><img src="10.jpeg" alt="Serviço técnico de refrigeração" loading="lazy"><div class="gallery-caption">Vácuo e pressurização do sistema</div></div>
+                <div class="gallery-item"><img src="11.jpeg" alt="Atendimento em cozinha industrial" loading="lazy"><div class="gallery-caption">Atendimento em cozinha industrial</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COMO FUNCIONA ==================== -->
+    <section class="section how-it-works" id="como-funciona">
+        <div class="section-inner">
+            <div style="text-align:center; margin-bottom:16px;">
+                <div class="section-tag" style="justify-content:center;">Como Funciona</div>
+                <h2 class="section-title" style="margin-left:auto; margin-right:auto;">
+                    Simples, rápido e <span class="highlight">eficiente</span>
+                </h2>
+                <p class="section-subtitle" style="margin-left:auto; margin-right:auto;">
+                    Em poucos passos, resolvemos o problema da sua refrigeração.
+                </p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Entre em Contato</h3>
+                    <p>Nos chame pelo WhatsApp ou telefone e descreva o problema. Respondemos rapidamente.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Diagnóstico Técnico</h3>
+                    <p>Nosso técnico vai até o local, avalia o equipamento e apresenta o diagnóstico com orçamento.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Problema Resolvido</h3>
+                    <p>Executamos o serviço com agilidade e qualidade, deixando seu equipamento funcionando perfeitamente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CTA ==================== -->
+    <section class="cta-section">
+        <div class="section-inner">
+            <div class="cta-content">
+                <h2>Sua câmara fria precisa de <span style="color:var(--ice-300)">atenção</span>?</h2>
+                <p>Entre em contato agora e receba um orçamento sem compromisso. Atendemos com urgência em São Paulo e Grande SP!</p>
+                <a href="https://api.whatsapp.com/send/?phone=5511977946152&text=Ol%C3%A1%2C+vim+pelo+site+e+gostaria+de+um+or%C3%A7amento" target="_blank" rel="noopener" class="btn-whatsapp">
+                    <svg viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                    SOLICITE UM TÉCNICO AGORA
+                </a>
+            </div>
+            <div class="cta-image">
+                <img src="camara-compacta.png" alt="Câmara fria compacta">
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CONTATO ==================== -->
+    <section class="section contact" id="contato">
+        <div class="section-inner">
+            <div class="section-tag">Contato</div>
+            <h2 class="section-title">Fale <span class="highlight">conosco</span></h2>
+            <p class="section-subtitle">Estamos prontos para atendê-lo da melhor forma.</p>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <div>
+                            <h3>Área de Atendimento</h3>
+                            <p>São Paulo e Grande São Paulo</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        </div>
+                        <div>
+                            <h3>Telefone / WhatsApp</h3>
+                            <p>(11) 97794-6152</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div>
+                            <h3>Horário de Atendimento</h3>
+                            <p>Segunda a Sexta: 08h às 17h</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-map">
+                    <iframe loading="lazy" src="https://maps.google.com/maps?q=Sao+Paulo&t=m&z=11&output=embed&iwloc=near" title="Localização" aria-label="Mapa"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                &#10052; Sx <span>Engenharia Térmica</span>
+            </div>
+            <p class="footer-cnpj">CNPJ: 44.402.529/0001-07</p>
+            <p class="footer-copy">&copy; 2026 Sx Engenharia Térmica. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- ==================== WHATSAPP FLUTUANTE ==================== -->
+    <div class="whatsapp-float">
+        <div class="float-badge">1</div>
+        <a href="https://api.whatsapp.com/send/?phone=5511977946152&text=Ol%C3%A1%2C+vim+pelo+site+e+gostaria+de+um+or%C3%A7amento" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <svg viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+        </a>
+    </div>
+
+    <!-- ==================== SCRIPT ==================== -->
+    <script>
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+
+</body>
+</html>
